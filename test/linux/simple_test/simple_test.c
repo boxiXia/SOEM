@@ -398,7 +398,7 @@ void simpletest(char *ifname,char *control_mode, float target_input, float max_v
 }
 
 
-OSAL_THREAD_FUNC ecatcheck( void *ptr )
+void ecatcheck( void *ptr )
 {
     int slave;
     (void)ptr;                  /* Not used */
@@ -475,11 +475,7 @@ OSAL_THREAD_FUNC ecatcheck( void *ptr )
     }
 }
 
-// Define a wrapper function with the correct signature
-void* ecatcheck_wrapper(void* ptr) {
-    ecatcheck(ptr);
-    return NULL;
-}
+
 
 int main(int argc, char *argv[])
 {
@@ -539,12 +535,7 @@ int main(int argc, char *argv[])
          return (0);
       }
    }
-   // osal_thread_create(&thread1, 128000, &ecatcheck, NULL);
-
-    // Cast the wrapper function to the appropriate type
-    void* (*wrapper_func)(void*) = &ecatcheck_wrapper;
-    osal_thread_create(&thread1, 128000, wrapper_func, NULL);
-
+   osal_thread_create(&thread1, 128000, &ecatcheck, NULL);
 
    simpletest(argv[1],argv[2],atof(argv[3]),atof(argv[4]),atof(argv[5]));
    printf("End program\n");
